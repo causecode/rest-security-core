@@ -95,6 +95,7 @@ dependencies {
     // CauseCode Dependencies
     provided "com.causecode.plugins:nucleus:0.4.3"
 }
+
 grailsPublish {
     // TODO: Provide values here
     user = 'user'
