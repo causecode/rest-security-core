@@ -7,7 +7,6 @@
  */
 package com.causecode
 
-import com.causecode.util.NucleusUtils
 import grails.plugins.Plugin
 
 /**
@@ -33,22 +32,7 @@ class RestSecurityCoreGrailsPlugin extends Plugin {
 
     /*
      * Note: Few default methods that were not required were removed. Please refer plugin docs if required.
-     * Removed methods: doWithApplicationContext, doWithDynamicMethods, onChange, onConfigChange
+     * Removed methods: doWithSpring, doWithApplicationContext, doWithDynamicMethods, onChange, onConfigChange
      * and onShutdown.
      */
-
-    Closure doWithSpring() { { ->
-            /*
-            * Merging configurations defined in DefaultConfig.groovy file from this plugin and installing application.
-            */
-            String springRestClassName = 'com.causecode.rest.DefaultSpringSecurityRestConfig'
-            String springCoreClassName = 'com.causecode.core.DefaultSpringSecurityCoreConfig'
-
-            ConfigObject springRestConfigAfterMerge = NucleusUtils.getMergedConfigurations(springRestClassName)
-            ConfigObject springSecurityCoreConfigAfterMerge = NucleusUtils.getMergedConfigurations(springCoreClassName)
-
-            (grailsApplication.config).merge(springSecurityCoreConfigAfterMerge)
-            (grailsApplication.config).merge(springRestConfigAfterMerge)
-        }
-    }
 }
