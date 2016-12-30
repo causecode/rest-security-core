@@ -20,15 +20,13 @@ class RestSecurityCoreGrailsPlugin extends Plugin {
 
     // TODO Fill in these fields
     def title = 'Rest Security Core Plugin' // Headline display name of the plugin
-    def author = 'Causecode'
+    def author = 'CauseCode'
     def authorEmail = ''
     def description = '''\
             This plugin contains spring security core and spring security rest default configurations.
         '''
 
     def documentation = 'https://bitbucket.org/causecode/rest-spring-core'
-
-    def loadBefore = ['spring-security-rest']
 
     /*
      * Note: Few default methods that were not required were removed. Please refer plugin docs if required.

@@ -8,7 +8,7 @@
 package com.causecode.spring.rest.oauth.twitter
 
 import com.fasterxml.jackson.databind.JsonNode
-import org.pac4j.oauth.client.TwitterClient
+import org.pac4j.oauth.client.TwitterClient as PacTwitterClient
 import org.pac4j.oauth.profile.JsonHelper
 import org.pac4j.oauth.profile.twitter.TwitterProfile
 import org.scribe.model.Token
@@ -19,12 +19,12 @@ import org.scribe.model.Token
  * @author Nikhil Sharma
  * @since 0.0.1
  */
-class CustomTwitterClient extends TwitterClient {
+class TwitterClient extends PacTwitterClient {
 
-    CustomTwitterClient() {
+    TwitterClient() {
     }
 
-    CustomTwitterClient(final String key, final String secret) {
+    TwitterClient(final String key, final String secret) {
         super(key, secret)
     }
 
@@ -42,8 +42,8 @@ class CustomTwitterClient extends TwitterClient {
     }
 
     @Override
-    protected CustomTwitterClient newClient() {
-        return new CustomTwitterClient()
+    protected TwitterClient newClient() {
+        return new TwitterClient()
     }
 
     @Override

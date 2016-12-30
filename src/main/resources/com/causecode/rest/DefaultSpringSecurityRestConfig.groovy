@@ -38,7 +38,7 @@ grails {
                     }
 
                     twitter {
-                        client = com.causecode.spring.rest.oauth.twitter.CustomTwitterClient
+                        client = com.causecode.spring.rest.oauth.twitter.TwitterClient
                         key = 'eXWuXe7Ilq1p38xHiaR1ZJH1W'
                         secret = 'VuwgVvOkLQVhl76RTaesa3l1kNhdZnmKc3hOIuIRo8xqKzPgJt'
                         defaultRoles = ['ROLE_USER', 'ROLE_TWITTER']

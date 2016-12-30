@@ -117,7 +117,3 @@ ccJacocoExt {
         '**/UrlMappings*/**',
     ]
 }
-
-task wrapper(type: Wrapper) {
-    gradleVersion = gradleWrapperVersion
-}

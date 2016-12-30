@@ -7,27 +7,6 @@
  */
 package com.causecode.core
 
-environments {
-    development {
-        grails {
-            mail {
-                username = "trialcausecode"
-                password = "causecode.11"
-                host = "smtp.gmail.com"
-                port = 465
-                props = ["mail.smtp.auth":"true",
-                         "mail.smtp.socketFactory.port":"465",
-                         "mail.smtp.socketFactory.class":"javax.net.ssl.SSLSocketFactory",
-                         "mail.smtp.socketFactory.fallback":"false"]
-            }
-        }
-    }
-    test {
-        grails.gorm.autoFlush = true
-        asynchronous.mail.disable = true
-    }
-}
-
 grails.plugin.springsecurity.securityConfigType = "InterceptUrlMap"
 
 grails.plugin.springsecurity.interceptUrlMap = [
