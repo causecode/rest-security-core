@@ -38,6 +38,7 @@ class TwitterClient extends PacTwitterClient {
                 profile.addAttribute(attribute, JsonHelper.get(json, attribute))
             }
         }
+
         return profile
     }
 
