@@ -58,6 +58,7 @@ class CustomUserDetailsService implements GrailsUserDetailsService {
             def authorities = userInstance.authorities.collect { Role roleInstance ->
                 new SimpleGrantedAuthority(roleInstance.authority)
             }
+
             new GrailsUser(userInstance.username, userInstance.password, userInstance.enabled,
                     !userInstance.accountExpired, !userInstance.passwordExpired, !userInstance.accountLocked,
                     authorities ?: NO_ROLES, userInstance.id)
