@@ -5,20 +5,12 @@ buildscript {
             maven { url "https://plugins.gradle.org/m2/" }
             maven { url "https://repo.grails.org/grails/core" }
             mavenCentral()
-            maven {
-                credentials {
-                    username mavenUser
-                    password mavenPassword
-                }
-                url "https://nexus.causecode.com/repository/maven-releases/"
-            }
         }
     }
     repositories mavenRepos
     dependencies {
         classpath "org.grails:grails-gradle-plugin:$grailsVersion"
         classpath "org.grails.plugins:views-gradle:1.1.0"
-        classpath "com.causecode.plugins:gradle-code-quality:1.0.0"
     }
 }
 
@@ -27,9 +19,11 @@ group "com.causecode.plugins"
 
 apply plugin:"idea"
 apply plugin:"org.grails.grails-plugin"
-apply plugin:"org.grails.grails-plugin-publish"
 apply plugin:"org.grails.plugins.views-json"
-apply plugin:'gradle-code-quality'
+apply plugin: 'maven-publish'
+apply plugin: 'maven'
+apply plugin: 'signing'
+
 
 repositories mavenRepos
 
@@ -42,34 +36,34 @@ dependencyManagement {
 
 dependencies {
     // Default plugin dependencies shipped with grails 3.2.0 and rest-api-plugin profile.
-    compile "org.springframework.boot:spring-boot-starter-logging"
-    compile "org.springframework.boot:spring-boot-autoconfigure"
-    compile "org.grails:grails-core"
-    compile "org.springframework.boot:spring-boot-starter-actuator"
-    provided "org.springframework.boot:spring-boot-starter-tomcat"
-    compile "org.grails:grails-plugin-url-mappings"
-    compile "org.grails:grails-plugin-rest"
-    compile "org.grails:grails-plugin-codecs"
-    compile "org.grails:grails-plugin-interceptors"
-    compile "org.grails:grails-plugin-services"
-    compile "org.grails:grails-plugin-datasource"
-    compile "org.grails:grails-plugin-databinding"
-    compile "org.grails:grails-plugin-async"
-    compile "org.grails:grails-web-boot"
-    compile "org.grails:grails-logging"
-    compile "org.grails.plugins:cache"
-    compile "org.grails.plugins:views-json"
-    compile "org.grails.plugins:views-json-templates"
-    console "org.grails:grails-console"
-    profile "org.grails.profiles:rest-api-plugin"
-    provided "org.grails:grails-plugin-services"
-    provided "org.grails:grails-plugin-domain-class"
+    compile "org.springframework.boot:spring-boot-starter-logging:1.4.0.RELEASE"
+    compile "org.springframework.boot:spring-boot-autoconfigure:1.4.0.RELEASE"
+    compile "org.grails:grails-core:3.2.0"
+    compile "org.springframework.boot:spring-boot-starter-actuator:1.4.0.RELEASE"
+    provided "org.springframework.boot:spring-boot-starter-tomcat:1.4.0.RELEASE"
+    compile "org.grails:grails-plugin-url-mappings:3.2.0"
+    compile "org.grails:grails-plugin-rest:3.2.0"
+    compile "org.grails:grails-plugin-codecs:3.2.0"
+    compile "org.grails:grails-plugin-interceptors:3.2.0"
+    compile "org.grails:grails-plugin-services:3.2.0"
+    compile "org.grails:grails-plugin-datasource:3.2.0"
+    compile "org.grails:grails-plugin-databinding:3.2.0"
+    compile "org.grails:grails-plugin-async:3.2.0"
+    compile "org.grails:grails-web-boot:3.2.0"
+    compile "org.grails:grails-logging:3.2.0"
+    compile "org.grails.plugins:cache:3.0.3"
+    compile "org.grails.plugins:views-json:1.1.0"
+    compile "org.grails.plugins:views-json-templates:1.1.0"
+    console "org.grails:grails-console:3.2.0"
+    profile "org.grails.profiles:rest-api-plugin:3.2.0"
+    provided "org.grails:grails-plugin-services:3.2.0"
+    provided "org.grails:grails-plugin-domain-class:3.2.0"
     // provided "org.codehaus.groovy:groovy-ant"
-    provided "org.springframework.boot:spring-boot-starter-tomcat"
-    runtime "com.h2database:h2"
-    testCompile "org.grails:grails-plugin-testing"
-    testCompile "org.grails.plugins:geb"
-    testCompile "org.grails:grails-datastore-rest-client"
+    provided "org.springframework.boot:spring-boot-starter-tomcat:1.4.0.RELEASE"
+    runtime "com.h2database:h2:1.4.192"
+    testCompile "org.grails:grails-plugin-testing:3.2.0"
+    testCompile "org.grails.plugins:geb:1.0.2"
+    testCompile "org.grails:grails-datastore-rest-client:6.0.0.RELEASE"
     testCompile "com.causecode.plugins:asynchronous-mail:2.3.1"
     testRuntime "org.seleniumhq.selenium:selenium-htmlunit-driver:2.47.1"
     testRuntime "net.sourceforge.htmlunit:htmlunit:2.18"
@@ -79,56 +73,66 @@ dependencies {
     provided "org.grails.plugins:spring-security-rest:2.0.0.M2"
 
     // CauseCode Dependencies
-    provided "com.causecode.plugins:nucleus:0.4.8"
+    provided "com.causecode.plugins:nucleus:0.4.81"
 }
 
-project.publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            from project.components.java
+artifacts {
+    archives jar
 
-            artifactId "rest-security-core"
+    archives javadocJar
+    archives sourcesJar
+}
 
-            pom.withXml {
-                def pomNode = asNode()
-                // version-less dependencies are handled with dependencyManagement
-                pomNode.dependencies.dependency.findAll {
-                    it.version.text().isEmpty()
-                }.each {
-                    it.replaceNode {}
+signing {
+    sign configurations.archives
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+
+            if (!project.hasProperty('ossrhUsername') || !project.hasProperty('ossrhPassword')) {
+                return
+            }
+
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
+
+            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
+
+            pom.project {
+                name 'rest-security-core'
+                packaging 'jar'
+                description 'This plugin is used to update embedded instances when parent class gets updated.'
+                url 'https://github.com/causecode/rest-security-core'
+
+                scm {
+                    url 'scm:svn:https://github.com/causecode/rest-security-core'
+                    connection 'scm:svn:https://github.com/causecode/rest-security-core.git'
+                    developerConnection 'https://github.com:causecode/rest-security-core.git'
+                }
+
+                licenses {
+                    license {
+                        name 'The Apache Software License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        distribution 'repo'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id 'causecode'
+                        name 'CauseCode Technologies'
+                        email 'bootstrap@causecode.com'
+                    }
                 }
             }
         }
     }
-    repositories {
-        maven {
-            credentials {
-                username mavenPublishUser
-                password mavenPublishPassword
-            }
-            url "https://nexus.causecode.com/repository/maven-releases/"
-        }
-    }
-}
-
-grailsPublish {
-    // TODO: Provide values here
-    user = 'user'
-    key = 'key'
-    githubSlug = 'foo/bar'
-    license {
-        name = 'Apache-2.0'
-    }
-    title = "My Plugin"
-    desc = "Full plugin description"
-    developers = [johndoe:"John Doe"]
-    portalUser = ""
-    portalPassword = ""    
-}
-
-ccJacocoExt {
-    excludes = [
-        '**/Application*/**',
-        '**/UrlMappings*/**',
-    ]
 }
