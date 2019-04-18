@@ -5,13 +5,6 @@ buildscript {
             maven { url "https://plugins.gradle.org/m2/" }
             maven { url "https://repo.grails.org/grails/core" }
             mavenCentral()
-            // maven {
-            //     credentials {
-            //         username mavenUser
-            //         password mavenPassword
-            //     }
-            //     url "https://nexus.causecode.com/repository/maven-releases/"
-            // }
         }
     }
     repositories mavenRepos
@@ -26,7 +19,6 @@ group "com.causecode.plugins"
 
 apply plugin:"idea"
 apply plugin:"org.grails.grails-plugin"
-// apply plugin:"org.grails.grails-plugin-publish"
 apply plugin:"org.grails.plugins.views-json"
 apply plugin: 'maven-publish'
 apply plugin: 'maven'
@@ -58,7 +50,7 @@ dependencies {
     compile "org.grails:grails-plugin-databinding:3.2.0"
     compile "org.grails:grails-plugin-async:3.2.0"
     compile "org.grails:grails-web-boot:3.2.0"
-    compile "org.grails:grails-logging:1.4.0.RELEASE"
+    compile "org.grails:grails-logging:3.2.0"
     compile "org.grails.plugins:cache:3.0.3"
     compile "org.grails.plugins:views-json:1.1.0"
     compile "org.grails.plugins:views-json-templates:1.1.0"
@@ -81,7 +73,7 @@ dependencies {
     provided "org.grails.plugins:spring-security-rest:2.0.0.M2"
 
     // CauseCode Dependencies
-    provided "com.causecode.plugins:nucleus:0.4.8-RC1"
+    provided "com.causecode.plugins:nucleus:0.4.81"
 }
 
 artifacts {
@@ -144,48 +136,3 @@ uploadArchives {
         }
     }
 }
-
-
-// project.publishing {
-//     publications {
-//         mavenJava(MavenPublication) {
-//             from project.components.java
-
-//             artifactId "rest-security-core"
-
-//             pom.withXml {
-//                 def pomNode = asNode()
-//                 // version-less dependencies are handled with dependencyManagement
-//                 pomNode.dependencies.dependency.findAll {
-//                     it.version.text().isEmpty()
-//                 }.each {
-//                     it.replaceNode {}
-//                 }
-//             }
-//         }
-//     }
-//     repositories {
-//         // maven {
-//         //     credentials {
-//         //         username mavenPublishUser
-//         //         password mavenPublishPassword
-//         //     }
-//         //     url "https://nexus.causecode.com/repository/maven-releases/"
-//         // }
-//     }
-// }
-
-// grailsPublish {
-//     // TODO: Provide values here
-//     user = 'user'
-//     key = 'key'
-//     githubSlug = 'foo/bar'
-//     license {
-//         name = 'Apache-2.0'
-//     }
-//     title = "My Plugin"
-//     desc = "Full plugin description"
-//     developers = [johndoe:"John Doe"]
-//     portalUser = ""
-//     portalPassword = ""
-// }
